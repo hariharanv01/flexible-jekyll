@@ -26,7 +26,7 @@ favicon: memoizable.png #favicon
 img-folder: "/assets/img/" #images folder
 
 # Disqus
-discus-identifier: hariharanv01 # add your discus identifier
+discus-identifier: memoizable # add your discus identifier
 
 # Tracker
 analytics: # Google Analytics
