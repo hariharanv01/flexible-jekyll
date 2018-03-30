@@ -47,7 +47,7 @@ func = add
 
 Higher order function is a function that takes function as an input parameter or returns functions or does both. This is a very powerful arsenal in functional programming that leads to very minimal code and brings in a lot of code reusability.
 
-Let's delve with some example. We need a function that takes a list and returns all elements divisible by 2. We use [List comprehension]({{"/list-comprehension-python/"}}) for simplicity.
+Let's delve with some example. We need a function that takes a list and returns all elements divisible by 2. We use [List comprehension]({{"/List-comprehension-python/"}}) for simplicity.
 
 ```python
 
