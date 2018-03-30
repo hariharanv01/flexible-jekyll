@@ -63,6 +63,8 @@
   display: none;
 }
 
+img { max-width: 100%; }
+
 }
 
 /* Extra Small Devices, Phones */
@@ -90,4 +92,5 @@
       }
     }
   }
+  img { max-width: 100%; }
 }
