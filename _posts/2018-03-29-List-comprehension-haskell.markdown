@@ -35,7 +35,8 @@ Let's see some other examples
 --list of tuple of (i, 2*i): [(1,2),(2,4),(3,6),(4,8),(5,10),(6,12),(7,14),(8,16),(9,18),(10,20)]
 print [(i, 2*i) | i <- [1..10]]
 
---list of even product of all the pair of elements one from each list: [6,12,18,24,14,28,8,16,24,32,18,36] 
+--list of even product of all the pair of elements one from 
+each list: [6,12,18,24,14,28,8,16,24,32,18,36] 
 print [i*j | i <- [6,7,8,9], j <- [1,2,3,4], (i*j) `mod` 2 == 0 ]
 
 
