@@ -1226,6 +1226,10 @@ a.newer-posts:hover {
   font-weight: 400;
 }
 
+pre {
+  white-space: pre-wrap;
+}
+
 /* - - - - - - - - - - Post Page Styles - - - - - - - - - - */
 .wrap-content {
   padding: 20px;
@@ -1256,6 +1260,7 @@ a.newer-posts:hover {
   max-height: 500px;
   background-color: #fafafa;
   overflow: hidden;
+  max-width: 100%;
 }
 
 .page-cover-image .page-image {
@@ -1319,6 +1324,10 @@ a.newer-posts:hover {
 
 .page-footer .page-tag a:hover {
   text-decoration: underline;
+}
+
+pre {
+  white-space: pre-wrap;
 }
 
 /* - - - - - - - - - - Tag Styles - - - - - - - - - - */
