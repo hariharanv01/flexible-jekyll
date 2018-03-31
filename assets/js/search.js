@@ -5,6 +5,10 @@
         "April", "May", "June", "July", "August", "September",
         "October", "November", "December"];
 
+    var contentContainerStyle = document.getElementById('content-container').style.display;   
+    
+    console.log(contentContainerStyle);
+
     var search = SimpleJekyllSearch({
         searchInput: document.getElementById('search-input'),
         resultsContainer: document.getElementById('search-results-container'),
@@ -21,7 +25,7 @@
             if (query && query.length > 0) {
                 document.getElementById('content-container').style.display = 'none';
             } else {
-                document.getElementById('content-container').style.display = 'block';
+                document.getElementById('content-container').style.display = contentContainerStyle;
             }
         }
     });
