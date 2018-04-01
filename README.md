@@ -57,5 +57,5 @@ Navigate to `https://<your-github-user-id>.github.io` to see your own github pag
 Go to `search.json` file and update it.
 
 
-**To serve minified JS/CSS in production, you need to push the build folders to github - preferably to a separate branch. Google for more info on thi**
+**To serve minified JS/CSS in production, you need to push the build folders to github - preferably to a separate branch. Google for more info on this**
 
