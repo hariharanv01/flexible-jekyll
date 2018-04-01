@@ -37,7 +37,7 @@ Modification includes:
 It's simple:
 
 1. Fork this github repository.
-2. Changed the forked repository name from `hariharanv01.github.io` to `<your-github-user-id>.github.io` in github.
+2. Change the forked repository name from `hariharanv01.github.io` to `<your-github-user-id>.github.io` in github.
 3. Go to *_config.yml* file, and change the configurations.
 4. Replace the posts and images in **_posts** and **asses/img** folders respectively with your own.
 5. Push your changes to your github remote, and your are done.
