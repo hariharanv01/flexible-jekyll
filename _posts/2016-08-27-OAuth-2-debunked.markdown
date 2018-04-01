@@ -3,7 +3,7 @@ title: OAuth 2.0 debunked
 description: Understand the most popular authorization flow standard - OAuth 2.0 explained
 layout: post
 type: post
-tags: [OAuth 2, authorization code, client credentials, implicit, resource owner password, access token]
+tags: [OAuth 2, authorization code, client credentials, implicit, resource owner password, access token, oauth]
 categories: [agnostic, security]
 img: oauth.svg
 ---
@@ -55,7 +55,7 @@ Once James clicks on "Import GMail Contacts" from Facebook, Facebook redirects h
 
 ```js
 
-https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=<facebook-client-id>&redirect_uri=http://facebook.com/gmailcallback&scope=Scope.ReadContacts
+https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=<facebook-client-id>&redirect_uri=https://facebook.com/gmailcallback&scope=Scope.ReadContacts
 
 ```
 
@@ -71,7 +71,7 @@ James now sees the consent page. Once consented, he's redirected to the redirect
 
 ```js
 
-http://facebook.com/gmailcallback?code=1223321
+https://facebook.com/gmailcallback?code=1223321
 
 ```
 
@@ -81,7 +81,7 @@ Facebook uses the auth code along with its client id and secret and retrieves th
 
 Request: 
 
-https://accounts.google.com/o/oauth2/v2/token?client_id=<facebook-client-id>&redirect_uri=http://facebook.com/gmailcallback&code=1223321&grant_type=authorization_code
+https://accounts.google.com/o/oauth2/v2/token?client_id=<facebook-client-id>&redirect_uri=https://facebook.com/gmailcallback&code=1223321&grant_type=authorization_code
 
 Header:
 Authorization: Basic someEncodedForm(facebook client id and secret)
@@ -159,7 +159,7 @@ We have already discussed the Authorization code grant in the Facebook-GMail sce
 
 ### Implicit Grant
 
-Sometimes, the Client will be a dumb client - not a server and like mobile apps, browser JS client, etc. In this case, the clients are usually not capable of confidentially maintaining their client credentials and also cannot host a redirection endpoint that the Service provider can redirect the resource owner to. These clients are called public clients since they cannot confidentially maintain their client credentials and are hence issued only Client id without client secret. Also, since these clients are not servers they cannot host a redirection endpoint and hence cannot use authorization code grant(as the service provider will need to redirect the resource owner to the client redirection uri with the auth code in authorization code grant).
+Sometimes, the Client will be a dumb client - not a server and like mobile apps, browser JS client, etc. In this case, the clients are usually not capable of confidentially maintaining their client credentials and also cannot host a redirection endpoint that the Service provider can redirect the resource owner to. These clients are called public clients since they cannot confidentially maintain their client credentials and are hence issued only Client id without client secret. Also, since these clients are not servers they cannot host a redirection endpoint and hence cannot use authorization code grant(as the service provider will need to redirect the resource owner to the client redirection ur with the auth code in authorization code grant).
 
 These clients, hence, will need to use implicit grant type. In this grant type, Clients are issued directly the Access token after resource owner consent.
 
@@ -168,7 +168,7 @@ These clients, hence, will need to use implicit grant type. In this grant type, 
 
 ### Client credentials Grant
 
-In this grant type, Clients themselves are the resource owner as well. Clients are issued tokens solely on the basis of Client credentials with any user consent. eg. Facebook has a GMail corporate account, and wants to access it. This grant can also be used to give trusted clients access to resources. For eg. Google Ads service wants to read all GMail users' emails to show them more relevant ads. GMail can issue Google Ads a token with which Google Ads can read user emails but not change his email settings or send mail on his behalf.
+In this grant type, Clients themselves are the resource owner as well. Clients are issued tokens solely on the basis of Client credentials without user consent. eg. Facebook has a GMail corporate account, and wants to access it. This grant can also be used to give trusted clients access to resources. For eg. Google Ads service wants to read all GMail users' emails to show them more relevant ads. GMail can issue Google Ads a token with which Google Ads can read user emails but not change his email settings or send mail on his behalf.
 
 ![Client creds grant]({{site.img-folder}}client_creds.jpg)
 
@@ -188,7 +188,7 @@ Refresh token needs to be maintained confidentially.
 
 
 ### Misc info on OAuth2
-Having discussed all the grant types, there are certains things we need to ensure before implementing or using OAuth2 service. A few are
+Having discussed all the grant types, there are certain things we need to ensure before implementing or using OAuth2 service. A few are
 
 1. Almost all of the OAuth2 endpoints and redirection uri need to over SSL/TLS since sensitive information like access token, refresh token, client credentials, resource owner credentials, etc are transmitted over wire. Else, it's susceptible to man-in-the-middle attacks.
 

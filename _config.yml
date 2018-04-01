@@ -10,20 +10,15 @@ text-logo: '{-MEMOIZABLE-}'
 # Author Settings
 author: Hariharan Viswanathan # add your name
 author-img: https://avatars2.githubusercontent.com/u/7565404?s=400&u=cf5879915d2919967214e740195e1d7196fe0682&v=4 # add your photo
-about-author: > 
-  An avid ployglot Coder with 10 plus years' experience in product and system development. Designed and developed highly scalable, distributed and performant large-scale systems that handle millions of requests every day
 
-  Functional Programming, scalability and Distributed architectures are few of the topics that excites me.
-
-  I live in Bangalore, India. 
-
-# social-twitter: # add your Twitter handle
-# social-facebook: # add your Facebook handle
+social-twitter: # add your Twitter handle
+social-facebook: # add your Facebook handle
 social-github: hariharanv01 # add your Github handle
 social-linkedin: hariharanviswanathan # add your Linkedin handle
 social-email: hariharanv01@gmail.com # add your Email address
-favicon: memoizable.png #favicon
 img-folder: "/assets/img/" #images folder
+favicon: memoizable.png #favicon
+
 
 # Disqus
 discus-identifier: memoizable # add your discus identifier

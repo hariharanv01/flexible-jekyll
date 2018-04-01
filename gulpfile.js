@@ -6,9 +6,6 @@ var pngquant = require('imagemin-pngquant');
 var cache = require('gulp-cache');
 var cp = require('child_process');
 var browserSync = require('browser-sync');
-const concat = require('gulp-concat');
-const uglify = require('gulp-uglify');
-
 
 var jekyll = process.platform === 'win32' ? 'jekyll.bat' : 'jekyll';
 
@@ -24,7 +21,7 @@ gulp.task('jekyll-rebuild', ['jekyll-build'], function () {
 });
 
 // Wait for jekyll-build, then launch the Server
-gulp.task('browser-sync', ['sass', 'img', 'jekyll-build', 'minify'], function () {
+gulp.task('browser-sync', ['sass', 'img', 'jekyll-build'], function () {
     browserSync({
         server: {
             baseDir: '_site'
@@ -66,15 +63,6 @@ gulp.task('watch', function () {
     gulp.watch('assets/img/**/*', ['img']);
     gulp.watch(['*.html', '_layouts/*.html', '_includes/*.html', '_pages/*.html', '_posts/*'], ['jekyll-rebuild']);
 });
-
-gulp.task('minify', function () {
-    gulp.src('assets/js/*.js')
-        .pipe(concat('bundle.js'))
-        .pipe(uglify())
-        .pipe(gulp.dest('_site/assets/js'))
-});
-
-gulp.task('dev', ['browser-sync', 'watch']);
 
 //  Default task
 gulp.task('default', ['browser-sync']);
