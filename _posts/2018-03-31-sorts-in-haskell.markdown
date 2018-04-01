@@ -6,7 +6,7 @@ layout: post
 type: post
 tags: [haskell, sort, quicksort, mergesort, quick sort, merge sort]
 categories: [haskell]
-img: haskell.svg
+img: sort.svg
 ---
 
 ### Quick and Merge sorts in Haskell
