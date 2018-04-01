@@ -763,6 +763,22 @@ template {
   color: #999;
 }
 
+.gist table {
+  border: 0px !important;
+}
+
+.gist table thead, .gist table tr, .gist table td {
+  border: 0px !important;
+}
+
+.gist table tr:nth-child(even) {
+  background: #ffffff;
+}
+
+.gist .gist-meta {
+  display: none;
+}
+
 *, *::after, *::before {
   -webkit-box-sizing: border-box;
           box-sizing: border-box;

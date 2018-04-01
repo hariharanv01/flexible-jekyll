@@ -65,3 +65,18 @@
 .css .o,
 .css .o + .nt,
 .css .nt + .nt { color: #999; }
+
+.gist {
+    table {
+      border: 0px !important; 
+    }
+    table thead, table tr, table td{
+        border: 0px !important;
+    }
+    table tr:nth-child(even) {
+        background: #ffffff;
+    }
+    .gist-meta {
+        display: none;
+    }
+}
