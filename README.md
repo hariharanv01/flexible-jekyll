@@ -59,3 +59,12 @@ Go to `search.json` file and update it.
 
 **To serve minified JS/CSS in production, you need to push the build folders to github - preferably to a separate branch. Google for more info on this**
 
+### Screenshots
+
+#### Main page
+
+![Screenshot](assets/img/ss.jpeg)
+
+#### Search page
+
+![Search Screenshot](assets/img/search.jpeg)
