@@ -47,9 +47,10 @@ Navigate to `https://<your-github-user-id>.github.io` to see your own github pag
 
 #### To try locally
 
-1. Go to root folder of this repo in your local box.
-2. Run `npm install`. Assuming you already have `npm` installed in your box.
-3. Run `gulp` to build your project and start browser-sync. It will automatically open the page in your default browser.
+1. Install [jekyll](https://jekyllrb.com/docs/installation/)
+2. Go to root folder of this repo in your local box.
+3. Run `npm install`. Assuming you already have `npm` installed in your box.
+4. Run `gulp` to build your project and start browser-sync. It will automatically open the page in your default browser.
 
 
 #### To configure your search field options

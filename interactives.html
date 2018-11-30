@@ -1,0 +1,307 @@
+---
+layout: main
+---
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.2.0/anime.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/buckets/1.90.0/buckets.min.js"></script>
+
+<style>
+  .grid-container {
+    display: inline-grid;
+    grid-template-columns: repeat(25, auto);
+    padding: 1px;
+  }
+  .grid-item {
+    border: 0.2px solid rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    text-align: center;
+  }
+  .slidecontainer {
+    width: 25%;
+  }
+
+  .msg {
+    display: none;
+    color: red;
+  }
+
+  .slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 10px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: 0.2s;
+    transition: opacity 0.2s;
+  }
+
+  .slider:hover {
+    opacity: 1;
+  }
+
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 10px;
+    height: 12px;
+    background: #4caf50;
+    cursor: pointer;
+  }
+
+  .slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    background: #4caf50;
+    cursor: pointer;
+  }
+</style>
+<div class="grid-container"></div>
+<br />
+<p class="msg">Source and destination cannot be connected</p>
+<br />
+<select id="algo">
+  <option value="bfs">BFS</option>
+  <option value="dijkstra">Dijkstra</option>
+  <option value="astar">A*</option>
+</select>
+<button id="playBtn" onclick="play()">Play</button>
+<button id="resetBtn" onclick="reset()">Reset</button> <br />
+<p>
+  <label for="chaosSlider">Slide to adjust obstacle rate in percentage: </label>
+  <input
+    type="text"
+    id="chaosSlider"
+    size="2"
+    readonly
+    style="border:0; color:#4caf50; font-weight:bold;background-color: transparent"
+  />
+</p>
+<div class="slidecontainer" id="obstacleSlider">
+  <input type="range" min="0" max="60" value="20" class="slider" id="myRange" />
+</div>
+
+<p>
+  <label for="speedSlider">Slide to adjust speed: </label>
+  <input
+    type="text"
+    id="speedSlider"
+    size="3"
+    readonly
+    style="border:0; color:#4caf50; font-weight:bold;background-color: transparent"
+  />
+</p>
+<div class="slidecontainer" id="speedSliderDiv">
+  <input
+    type="range"
+    min="0"
+    max="150"
+    value="50"
+    class="slider"
+    id="myRange2"
+  />
+</div>
+<br />
+<div class="legend"></div>
+<script>
+  const rows = 25;
+  const cellColor = "#33E6FF";
+  const obstacleColor = "#FF5733";
+  const visitedCellColor = "#E1F3F1";
+  const currCellColor = "black";
+  const srcCellColor = "#0AAC00";
+  const destCellColor = "#0800AC";
+  let speed = 50;
+
+  $(() => {
+    $("#chaosSlider").val($("#myRange").val());
+    $("#speedSlider").val($("#myRange2").val());
+    setup($("#myRange").val() / 100);
+  });
+
+  $("#obstacleSlider").on("input", () => {
+    $("#chaosSlider").val($("#myRange").val());
+    setup($("#myRange").val() / 100);
+  });
+
+  $("#speedSliderDiv").on("input", () => {
+    $("#speedSlider").val($("#myRange2").val());
+    speed = $("#myRange2").val();
+  });
+
+  function setup(obstacles) {
+    $(".grid-container").html("");
+    $(".legend").html("");
+    for (let i = 0; i < rows; i++) {
+      for (let j = 0; j < rows; j++) {
+        var id = getId(i, j);
+        var isObstacle = !(Math.random() >= obstacles);
+        var color = isObstacle ? obstacleColor : cellColor;
+        $(".grid-container").append(
+          "<div class='grid-item' id=" +
+            id +
+            " style='background-color: " +
+            color +
+            "'></div>"
+        );
+        if (isObstacle) {
+          $("#" + id).addClass("obstacle");
+        }
+      }
+    }
+    $(".legend").append(
+      "<table><tr><td colspan=2>Legend:</td></tr><tr><td><div class='grid-item' style='background-color:" +
+        cellColor +
+        "'></div></td><td>Cells</td></tr><tr><td><div class='grid-item' style='background-color:" +
+        obstacleColor +
+        "'></div></td><td>Obstacles</td></tr><tr><td><div class='grid-item' style='background-color:" +
+        srcCellColor +
+        "'></div></td><td>Source cell</td></tr><tr><td><div class='grid-item' style='background-color:" +
+        destCellColor +
+        "'></div></td><td>Destination cell</td></tr><tr><td><div class='grid-item' style='background-color:" +
+        currCellColor +
+        "'></div></td><td>Current cell</td></tr></table>"
+    );
+  }
+
+  function getId(i, j) {
+    return "b_" + i + "-" + j;
+  }
+
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  function elem() {
+    let src = Math.floor(Math.random() * (rows * rows - 0)) + 0;
+    let id = getId(Math.floor(src / rows), src % rows);
+    if ($("#" + id).hasClass("obstacle")) {
+      return elem();
+    }
+    return id;
+  }
+
+  async function play() {
+    $("#resetBtn").prop("disabled", true);
+    var src = elem();
+    var dest = elem();
+    $("#" + src).css("background-color", srcCellColor);
+    $("#" + dest).css("background-color", destCellColor);
+    $("#playBtn").prop("disabled", true);
+    await window[$("#algo").val()](src, dest);
+    $("#resetBtn").prop("disabled", false);
+  }
+
+  function dijkstra(src, dest) {
+    var q = new buckets.PriorityQueue();
+  }
+
+  function reset() {
+    setup($("#myRange").val() / 100);
+    $("#playBtn").prop("disabled", false);
+    $(".msg").hide();
+  }
+
+  class Node {
+    constructor(id, src = null, dest = null) {
+      this.id = id;
+      this.src = src ? new Node(src) : null;
+      this.dest = dest ? new Node(dest) : null;
+      let vals = coordinates(id);
+      this.i = vals[0];
+      this.j = vals[1];
+    }
+  }
+
+  Node.prototype.equals = o => this.id === o.id;
+
+  function nodeToString(node) {
+    return node.id;
+  }
+
+  async function bfs(src, dest) {
+    let q = new buckets.Queue();
+    await traverse(q, src, dest);
+  }
+
+  async function dijkstra(src, dest) {
+    let q = new buckets.PriorityQueue(
+      (a, b) =>
+        -(
+          Math.abs(a.i - a.src.i) +
+          Math.abs(a.j - a.src.j) -
+          (Math.abs(b.i - b.src.i) + Math.abs(b.j - b.src.j))
+        )
+    );
+    await traverse(q, src, dest);
+  }
+
+  async function astar(src, dest) {
+    let q = new buckets.PriorityQueue(
+      (a, b) =>
+        Math.sqrt(Math.pow(b.i - b.src.i, 2) + Math.pow(b.j - b.src.j, 2)) +
+        Math.sqrt(Math.pow(b.i - b.dest.i, 2) + Math.pow(b.j - b.dest.j, 2)) -
+        (Math.sqrt(Math.pow(a.i - a.src.i, 2) + Math.pow(a.j - a.src.j, 2)) +
+          Math.sqrt(Math.pow(a.i - a.dest.i, 2) + Math.pow(a.j - a.dest.j, 2)))
+    );
+    await traverse(q, src, dest);
+  }
+
+  async function traverse(q, src, dest) {
+    let visisted = new buckets.Set(nodeToString);
+    q.enqueue(new Node(src));
+    var isConnected = false;
+    while (!q.isEmpty()) {
+      let node = q.dequeue();
+      if (visisted.contains(node)) {
+        continue;
+      }
+      if (node.id != src && node.id != dest) {
+        $("#" + node.id).css("background-color", currCellColor);
+      }
+      if (node.id == dest) {
+        console.log("Reached destination");
+        isConnected = true;
+        break;
+      }
+      getNeighbour(node.id).forEach(neigh => {
+        q.enqueue(new Node(neigh, src, dest));
+      });
+      visisted.add(node);
+      await sleep(speed);
+      if (node.id != src && node.id != dest) {
+        $("#" + node.id).css("background-color", visitedCellColor);
+      }
+    }
+    if (!isConnected) {
+      $(".msg").show();
+    }
+  }
+
+  function coordinates(id) {
+    return id.substring(2).split("-");
+  }
+
+  function getNeighbour(node) {
+    const vals = coordinates(node);
+    const i = parseInt(vals[0]);
+    const j = parseInt(vals[1]);
+    var res = [
+      [i + 1, j + 1],
+      [i - 1, j - 1],
+      [i + 1, j - 1],
+      [i - 1, j + 1],
+      [i, j + 1],
+      [i, j - 1],
+      [i + 1, j],
+      [i - 1, j]
+    ];
+    return res
+      .filter(
+        elem => elem[0] >= 0 && elem[1] >= 0 && elem[0] < rows && elem[1] < rows
+      )
+      .map(elem => "b_" + elem[0] + "-" + elem[1])
+      .filter(elem => !$("#" + elem).hasClass("obstacle"));
+  }
+</script>
