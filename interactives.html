@@ -238,13 +238,9 @@ layout: main
   }
 
   async function dijkstra(src, dest) {
-    let q = new buckets.PriorityQueue(
-      (a, b) =>
-        -(
-          Math.abs(a.i - a.src.i) +
-          Math.abs(a.j - a.src.j) -
-          (Math.abs(b.i - b.src.i) + Math.abs(b.j - b.src.j))
-        )
+    let q = new buckets.PriorityQueue((a, b) => (a, b) =>
+      Math.sqrt(Math.pow(b.i - b.src.i, 2) + Math.pow(b.j - b.src.j, 2)) -
+      Math.sqrt(Math.pow(a.i - a.src.i, 2) + Math.pow(a.j - a.src.j, 2))
     );
     await traverse(q, src, dest);
   }
