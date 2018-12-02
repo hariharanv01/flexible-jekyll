@@ -13,7 +13,7 @@ layout: main
     padding: 1px;
   }
   .grid-item {
-    border: 0.2px solid rgba(0, 0, 0, 0.2);
+    border: 0.1px solid rgba(0, 0, 0, 0.2);
     padding: 10px;
     text-align: center;
   }
@@ -60,8 +60,14 @@ layout: main
 <div>
   <h3>Graph shortest path algorithms</h3>
   <div class="grid-container"></div>
+  <p>Click on the cells to create obstacles</p>
   <br />
   <p class="msg">Source and destination cannot be connected</p>
+
+  <label>Source: </label>
+  <input type="text" id="src" placeholder="1,1" size="9" />
+  <label>Destination: </label>
+  <input type="text" id="dest" placeholder="13,13" size="9" /> <br />
   <br />
   <select id="algo">
     <option value="bfs">BFS</option>
@@ -70,29 +76,6 @@ layout: main
   </select>
   <button id="playBtn" onclick="play()">Play</button>
   <button id="resetBtn" onclick="reset()">Reset</button> <br />
-  <p>
-    <label for="chaosSlider"
-      >Slide to adjust obstacle rate in percentage:
-    </label>
-    <input
-      type="text"
-      id="chaosSlider"
-      size="2"
-      readonly
-      style="border:0; color:#4caf50; font-weight:bold;background-color: transparent"
-    />
-  </p>
-  <div class="slidecontainer" id="obstacleSlider">
-    <input
-      type="range"
-      min="0"
-      max="60"
-      value="20"
-      class="slider"
-      id="myRange"
-    />
-  </div>
-
   <p>
     <label for="speedSlider">Slide to adjust speed: </label>
     <input
@@ -124,42 +107,99 @@ layout: main
   const currCellColor = "black";
   const srcCellColor = "#0AAC00";
   const destCellColor = "#0800AC";
-  let speed = 50;
+  var speed = 50;
+
+  var cells = {
+    src: null,
+    dest: null
+  };
 
   $(() => {
-    $("#chaosSlider").val($("#myRange").val());
     $("#speedSlider").val($("#myRange2").val());
     setup($("#myRange").val() / 100);
+    $("#speedSliderDiv").on("input", () => {
+      $("#speedSlider").val($("#myRange2").val());
+      speed = $("#myRange2").val();
+    });
+
+    $("#src").blur(() => {
+      if ($("#src").val()) {
+        if (!validateCells($("#src").val())) {
+          alert("Invalid source");
+          return;
+        }
+        let coords = $("#src")
+          .val()
+          .split(",");
+        let id = getId(coords[0], coords[1]);
+        if (cells.src) {
+          $("#" + cells.src).css("background-color", cellColor);
+        }
+        cells.src = id;
+        $("#" + id).css("background-color", srcCellColor);
+      }
+    });
+
+    $("#dest").blur(() => {
+      if ($("#dest").val()) {
+        if (!validateCells($("#dest").val())) {
+          alert("Invalid destination");
+          return;
+        }
+        let coords = $("#dest")
+          .val()
+          .split(",");
+        let id = getId(coords[0], coords[1]);
+        if (cells.dest) {
+          $("#" + cells.dest).css("background-color", cellColor);
+        }
+        cells.dest = id;
+        $("#" + id).css("background-color", destCellColor);
+      }
+    });
   });
 
-  $("#obstacleSlider").on("input", () => {
-    $("#chaosSlider").val($("#myRange").val());
-    setup($("#myRange").val() / 100);
-  });
+  function validateCells(cellVal) {
+    return /\b\d{1,2},\d{1,2}\b/.test(cellVal);
+  }
 
-  $("#speedSliderDiv").on("input", () => {
-    $("#speedSlider").val($("#myRange2").val());
-    speed = $("#myRange2").val();
-  });
+  function clicked(elem) {
+    var el = $("#" + elem.id);
+    if (el.hasClass("obstacle")) {
+      el.removeClass("obstacle");
+      el.css("background-color", cellColor);
+    } else {
+      el.addClass("obstacle");
+      el.css("background-color", obstacleColor);
+    }
+  }
 
   function setup(obstacles) {
     $(".grid-container").html("");
     $(".legend").html("");
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < rows; j++) {
+        if (i == 0 || j == 0) {
+          $(".grid-container").append(
+            "<div class='grid-item' style='padding:0px; border:0'>" +
+              (i == 0 ? j : i) +
+              "</div>"
+          );
+          continue;
+        }
         var id = getId(i, j);
         var isObstacle = !(Math.random() >= obstacles);
-        var color = isObstacle ? obstacleColor : cellColor;
         $(".grid-container").append(
           "<div class='grid-item' id=" +
             id +
             " style='background-color: " +
-            color +
-            "'></div>"
+            cellColor +
+            "' title='(" +
+            i +
+            "," +
+            j +
+            ")', onclick='clicked(this)'></div>"
         );
-        if (isObstacle) {
-          $("#" + id).addClass("obstacle");
-        }
       }
     }
     $(".legend").append(
@@ -173,7 +213,9 @@ layout: main
         destCellColor +
         "'></div></td><td>Destination cell</td></tr><tr><td><div class='grid-item' style='background-color:" +
         currCellColor +
-        "'></div></td><td>Current cell</td></tr></table>"
+        "'></div></td><td>Current cell</td></tr><tr><td><div class='grid-item' style='background-color:" +
+        visitedCellColor +
+        "'></div></td><td>Visited cell</td></tr></table>"
     );
   }
 
@@ -196,8 +238,12 @@ layout: main
 
   async function play() {
     $("#resetBtn").prop("disabled", true);
-    var src = elem();
-    var dest = elem();
+    if (cells.src == null || cells.dest == null) {
+      alert("Select source and destination cells");
+      return;
+    }
+    var src = cells.src;
+    var dest = cells.dest;
     $("#" + src).css("background-color", srcCellColor);
     $("#" + dest).css("background-color", destCellColor);
     $("#playBtn").prop("disabled", true);
@@ -209,7 +255,33 @@ layout: main
     var q = new buckets.PriorityQueue();
   }
 
+  function hexToRgb(hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+
+    // Correct string should be like: "rgb(6, 137, 203)" <-- note the spaces
+    return (
+      "rgb(" +
+      parseInt(result[1], 16) +
+      ", " +
+      parseInt(result[2], 16) +
+      ", " +
+      parseInt(result[3], 16) +
+      ")"
+    );
+  }
+
   function reset() {
+    $(".grid-container > .grid-item").each((i, elem) => {
+      let color = $(elem).css("background-color");
+      if (color === hexToRgb(visitedCellColor)) {
+        $(elem).css("background-color", cellColor);
+      }
+    });
+    $("#playBtn").prop("disabled", false);
+    $(".msg").hide();
+  }
+
+  function fullReset() {
     setup($("#myRange").val() / 100);
     $("#playBtn").prop("disabled", false);
     $(".msg").hide();
@@ -308,7 +380,7 @@ layout: main
     ];
     return res
       .filter(
-        elem => elem[0] >= 0 && elem[1] >= 0 && elem[0] < rows && elem[1] < rows
+        elem => elem[0] >= 1 && elem[1] >= 1 && elem[0] < rows && elem[1] < rows
       )
       .map(elem => "b_" + elem[0] + "-" + elem[1])
       .filter(elem => !$("#" + elem).hasClass("obstacle"));
